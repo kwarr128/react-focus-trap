@@ -7,12 +7,20 @@ let React = require('react')
 let stack = []
 let timer = null
 
+function getActiveElement() {
+  try {
+    return document.activeElement;
+  } catch(e) {
+    return document.body;
+  }
+}
+
 /**
  * To support server-side rendering, do not push the active element
  * when not in the browser environment
  */
-if (typeof document !== 'undefined' && document.activeElement) {
-  stack.push(document.activeElement)
+if (typeof document !== 'undefined' && getActiveElement()) {
+  stack.push(getActiveElement())
 }
 
 let FocalPoint = React.createClass({
@@ -51,7 +59,7 @@ let FocalPoint = React.createClass({
   componentDidMount() {
     stack.push(this)
 
-    this.setState({ anchor: document.activeElement })
+    this.setState({ anchor: getActiveElement() })
     this.trapFocus()
 
     document.addEventListener('focus', this._onBlur, true)
